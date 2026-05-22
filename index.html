@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgendarIA — Crescer com IA e, sem complicações</title>
+  <meta name="description" content="Desenvolvemos websites modernos e agentes de inteligência artificial que transformam a presença digital da sua empresa. Sem complicações.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy:      '#141927',
+              blue:      '#6D88F0',
+              'blue-mid': '#5A78E8',
+              'blue-light': '#A3B4F7',
+              'blue-pale': '#EEF1FD',
+              glow:      '#60B1FF',
+            }
+          },
+          fontFamily: {
+            display: ['Fustat', 'sans-serif'],
+            body:    ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #ffffff;
+      color: #141927;
+      overflow-x: hidden;
+    }
+
+    /* ─── Glass Navbar ─── */
+    .glass-nav {
+      backdrop-filter: blur(50px);
+      -webkit-backdrop-filter: blur(50px);
+      background: rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow:
+        inset 0px 4px 4px 0px rgba(255, 255, 255, 0.28),
+        0px 8px 32px rgba(109, 136, 240, 0.09);
+      border-radius: 18px;
+    }
+
+    /* ─── Primary CTA Button ─── */
+    .glass-btn {
+      background: rgba(0, 108, 240, 0.82);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow:
+        inset 0px 4px 4px 0px rgba(255, 255, 255, 0.32),
+        0px 4px 18px rgba(109, 136, 240, 0.28);
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .glass-btn:hover {
+      transform: scale(1.025);
+      box-shadow:
+        inset 0px 4px 4px 0px rgba(255, 255, 255, 0.38),
+        0px 10px 28px rgba(109, 136, 240, 0.38);
+    }
+
+    .glass-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ─── Glow Blobs ─── */
+    .glow-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+    }
+
+    .glow-blob-1 {
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(96, 177, 255, 0.16) 0%, transparent 70%);
+      top: -260px;
+      left: -240px;
+    }
+
+    .glow-blob-2 {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(49, 154, 255, 0.11) 0%, transparent 70%);
+      top: 80px;
+      left: 30px;
+    }
+
+    /* ─── Orb ─── */
+    .orb-video {
+      mix-blend-mode: screen;
+      filter: hue-rotate(-55deg) saturate(250%) brightness(1.2) contrast(1.1);
+    }
+
+    @keyframes float {
+      0%,  100% { transform: translateY(0px)   scale(1.28); }
+      50%        { transform: translateY(-14px) scale(1.28); }
+    }
+    .orb-float { animation: float 7s ease-in-out infinite; }
+
+    /* ─── Proof Badge ─── */
+    .proof-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px 5px 8px;
+      background: rgba(109, 136, 240, 0.08);
+      border: 1px solid rgba(109, 136, 240, 0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      color: #3a55cc;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1;   transform: scale(1);    }
+      50%       { opacity: 0.5; transform: scale(0.82); }
+    }
+    .proof-dot {
+      width: 8px; height: 8px;
+      background: #6D88F0;
+      border-radius: 50%;
+      animation: pulse-dot 2.2s infinite;
+      flex-shrink: 0;
+    }
+
+    /* ─── Load animations ─── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(26px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .anim-0 { animation: fade-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.0s both; }
+    .anim-1 { animation: fade-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+    .anim-2 { animation: fade-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.3s  both; }
+    .anim-3 { animation: fade-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+
+    /* ─── Marquee ─── */
+    @keyframes marquee {
+      from { transform: translateX(0);     }
+      to   { transform: translateX(-50%);  }
+    }
+    .marquee-track {
+      animation: marquee 22s linear infinite;
+      display: flex;
+      gap: 90px;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    /* ─── Nav link ─── */
+    .nav-link {
+      position: relative;
+      color: rgba(20, 25, 39, 0.58);
+      font-weight: 500;
+      font-size: 15px;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover { color: #141927; }
+
+    /* ─── Service Card ─── */
+    .service-card {
+      background: linear-gradient(145deg, #F8F9FE 0%, #ffffff 100%);
+      border: 1px solid rgba(109, 136, 240, 0.11);
+      border-radius: 28px;
+      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 28px 56px rgba(109, 136, 240, 0.14);
+    }
+    .service-card-dark {
+      background: linear-gradient(145deg, #141927 0%, #1d2b47 100%);
+      border: 1px solid rgba(109, 136, 240, 0.18);
+      border-radius: 28px;
+      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .service-card-dark:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 28px 56px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ─── Section tag ─── */
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6D88F0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .tag-dot {
+      width: 5px; height: 5px;
+      background: #6D88F0;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ─── Feature check item ─── */
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* ─── Scroll reveal ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.72s ease, transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── CTA dark bg ─── */
+    .cta-section {
+      background: linear-gradient(140deg, #111623 0%, #1a2845 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: fixed; /* use fixed for grain only on pseudo */
+      inset: 0;
+      z-index: 0;
+    }
+    .cta-glow-1 {
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(109, 136, 240, 0.15) 0%, transparent 60%);
+      border-radius: 50%;
+      top: -35%;
+      left: -15%;
+      pointer-events: none;
+    }
+    .cta-glow-2 {
+      position: absolute;
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, rgba(96, 177, 255, 0.10) 0%, transparent 60%);
+      border-radius: 50%;
+      bottom: -30%;
+      right: -8%;
+      pointer-events: none;
+    }
+
+    /* ─── Testimonial card ─── */
+    .testi-card {
+      background: white;
+      border: 1px solid rgba(20, 25, 39, 0.07);
+      border-radius: 24px;
+      box-shadow: 0 6px 28px rgba(20, 25, 39, 0.04);
+      transition: transform 0.3s ease;
+    }
+    .testi-card:hover { transform: translateY(-3px); }
+
+    /* ─── Grain overlay (fixed pseudo, no scroll cost) ─── */
+    .grain-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.022;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ─── Mobile collapse ─── */
+    @media (max-width: 1024px) {
+      .orb-container { display: none !important; }
+    }
+
+    /* ─── Input ─── */
+    .cta-input {
+      flex: 1;
+      min-width: 220px;
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 14px;
+      color: white;
+      font-size: 15px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .cta-input::placeholder { color: rgba(255,255,255,0.28); }
+    .cta-input:focus { border-color: rgba(109,136,240,0.55); }
+
+    /* ─── Step connector ─── */
+    .step-line {
+      position: absolute;
+      top: 32px;
+      left: calc(33.33% + 32px);
+      right: calc(33.33% + 32px);
+      height: 1px;
+      background: linear-gradient(90deg, rgba(109,136,240,0.3), rgba(109,136,240,0.3));
+    }
+
+    /* ─── Browser chrome mockup ─── */
+    .browser-dot { width: 8px; height: 8px; border-radius: 50%; }
+  </style>
+</head>
+
+<body>
+  <div class="grain-overlay"></div>
+
+
+  <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+  <header class="fixed top-5 left-0 right-0 z-50 flex justify-center px-4">
+    <nav class="glass-nav flex items-center gap-7 px-5 py-2.5">
+      <!-- Logo -->
+      <a href="/" class="flex items-center shrink-0">
+        <img src="logo%20(2).png" alt="AgendarIA" style="height: 30px; width: auto;">
+      </a>
+
+      <!-- Links (hidden on mobile) -->
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#servicos"       class="nav-link">Serviços</a>
+        <a href="#como-funciona"  class="nav-link">Como funciona</a>
+        <a href="#resultados"     class="nav-link">Resultados</a>
+        <a href="#contacto"       class="nav-link">Contacto</a>
+      </div>
+
+      <!-- CTA -->
+      <a href="#contacto" class="glass-btn px-4 py-2.5 text-white text-sm font-semibold gap-2">
+        Marcar Reunião
+        <span style="width:22px;height:22px;background:rgba(255,255,255,0.22);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6h8M6 2l4 4-4 4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </nav>
+  </header>
+
+
+  <!-- ═══════════════════════ HERO ═══════════════════════ -->
+  <section class="relative bg-white overflow-hidden" style="min-height: 100dvh; display: flex; flex-direction: column;">
+
+    <!-- Background glow blobs -->
+    <div class="glow-blob glow-blob-1"></div>
+    <div class="glow-blob glow-blob-2"></div>
+
+    <!-- Main hero grid -->
+    <div class="relative z-10 flex-1 flex items-center" style="max-width: 1600px; width: 100%; margin: 0 auto; padding: 0 3rem;">
+      <div style="width:100%; display:grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 7rem 0 4rem;">
+
+        <!-- Left: Content -->
+        <div style="display:flex; flex-direction:column; gap: 28px; justify-content: center; padding-right: 4rem;">
+
+          <!-- Social proof badge -->
+          <div class="anim-0">
+            <div class="proof-badge" style="width: fit-content;">
+              <div class="proof-dot"></div>
+              <span>Avaliado 4.9/5 por mais de 50 empresas</span>
+              <!-- Stars -->
+              <span style="display:flex; gap:2px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Headline -->
+          <h1 class="anim-1 font-display font-bold" style="color:#141927; font-size: clamp(44px, 5.2vw, 74px); line-height: 1.04; letter-spacing: -2.5px;">
+            Crescer com IA<br>e, sem complicações.
+          </h1>
+
+          <!-- Subheadline -->
+          <p class="anim-2" style="color:#64748b; font-size: 18px; line-height: 1.72; letter-spacing: -0.4px; max-width: 460px;">
+            Desenvolvemos websites modernos e agentes de inteligência artificial que transformam a presença digital da sua empresa — sem jargão, sem complexidade.
+          </p>
+
+          <!-- CTAs -->
+          <div class="anim-3" style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+            <a href="#contacto" class="glass-btn px-6 py-3.5 text-white font-semibold gap-2.5" style="font-size: 15px;">
+              Começar Agora
+              <span style="width:28px;height:28px;background:rgba(255,255,255,0.22);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </a>
+            <a href="#servicos" style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#141927;text-decoration:none;transition:gap 0.3s ease;" onmouseover="this.style.gap='12px'" onmouseout="this.style.gap='8px'">
+              Ver serviços
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="#141927" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Orb -->
+        <div class="orb-container" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+          <div class="orb-float">
+            <video autoplay loop muted playsinline class="orb-video" style="width: 560px; height: 560px; object-fit: cover;">
+              <source src="https://future.co/images/homepage/glassy-orb/orb-purple.webm" type="video/webm">
+            </video>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Trusted by marquee strip -->
+    <div class="relative z-10" style="border-top: 1px solid rgba(20,25,39,0.07); padding: 28px 0;">
+      <p style="text-align:center; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#cbd5e1; font-family:'Plus Jakarta Sans',sans-serif; margin-bottom:20px;">
+        Empresas que confiam na AgendarIA
+      </p>
+      <div style="overflow:hidden;">
+        <div class="marquee-track">
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Lusomática</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Veritá Studio</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Porto Digital</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Novum Group</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Atlântica Co.</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Meridian PT</span>
+          <!-- Duplicate for seamless loop -->
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Lusomática</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Veritá Studio</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Porto Digital</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Novum Group</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Atlântica Co.</span>
+          <span style="font-family:'Fustat',sans-serif; font-weight:700; font-size:22px; color:#e2e8f0; letter-spacing:-0.8px;">Meridian PT</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ SERVICES ═══════════════════════ -->
+  <section id="servicos" style="padding: 96px 0; background: #ffffff;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 3rem;">
+
+      <!-- Header -->
+      <div class="reveal" style="display:flex; flex-direction:column; gap:16px; margin-bottom:60px;">
+        <span class="section-tag"><span class="tag-dot"></span>O que fazemos</span>
+        <div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+          <h2 class="font-display font-bold" style="color:#141927; font-size: clamp(30px, 3.2vw, 50px); line-height:1.08; letter-spacing:-1.8px; max-width:440px;">
+            Dois serviços.<br>Uma presença digital completa.
+          </h2>
+          <p style="color:#64748b; font-size:15px; line-height:1.72; max-width:340px; font-family:'Plus Jakarta Sans',sans-serif;">
+            Combinamos design de alto nível com automação inteligente para impulsionar o crescimento do seu negócio.
+          </p>
+        </div>
+      </div>
+
+      <!-- Cards grid: 3+2 cols -->
+      <div style="display:grid; grid-template-columns: 3fr 2fr; gap: 20px;">
+
+        <!-- Websites 2.0 (light) -->
+        <div class="service-card reveal" style="padding: 48px; display:flex; flex-direction:column; gap:32px; animation-delay:0.1s;">
+          <!-- Icon -->
+          <div style="width:56px;height:56px;background:linear-gradient(135deg,#EEF1FD,#E0E7FF);border-radius:16px;display:flex;align-items:center;justify-content:center;">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="2" y="4" width="22" height="16" rx="3" stroke="#6D88F0" stroke-width="1.7"/>
+              <path d="M2 9h22" stroke="#6D88F0" stroke-width="1.7"/>
+              <circle cx="6" cy="6.5" r="1.1" fill="#6D88F0"/>
+              <circle cx="10" cy="6.5" r="1.1" fill="#6D88F0"/>
+              <circle cx="14" cy="6.5" r="1.1" fill="#6D88F0"/>
+              <path d="M8 14.5l2.5 2.5 5.5-5.5" stroke="#6D88F0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div>
+            <h3 class="font-display font-bold" style="color:#141927; font-size: clamp(20px, 2.2vw, 28px); letter-spacing:-0.7px; margin-bottom:12px;">
+              Websites 2.0
+            </h3>
+            <p style="color:#64748b; font-size:15px; line-height:1.72; max-width:380px; font-family:'Plus Jakarta Sans',sans-serif;">
+              Presença digital que converte. Websites rápidos, modernos e otimizados para motores de busca — construídos para crescer com o seu negócio, não apenas para parecer bonitos.
+            </p>
+          </div>
+
+          <!-- Feature list -->
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="check-item" style="color:#475569;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" flex-shrink="0"><circle cx="10" cy="10" r="9" fill="#EEF1FD"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#6D88F0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Design responsivo e premium
+            </div>
+            <div class="check-item" style="color:#475569;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#EEF1FD"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#6D88F0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              SEO técnico avançado
+            </div>
+            <div class="check-item" style="color:#475569;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#EEF1FD"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#6D88F0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Integração com ferramentas de negócio
+            </div>
+            <div class="check-item" style="color:#475569;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#EEF1FD"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#6D88F0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Painel de gestão intuitivo
+            </div>
+          </div>
+
+          <!-- Browser mockup -->
+          <div style="background:linear-gradient(135deg,#EEF1FD 0%,#E6ECFF 100%); border-radius:16px; padding:16px; margin-top:auto;">
+            <div style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 4px 20px rgba(109,136,240,0.14);">
+              <div style="background:#F4F6FF; padding:8px 12px; display:flex; align-items:center; gap:8px;">
+                <div style="display:flex;gap:5px;">
+                  <div class="browser-dot" style="background:#FF6B6B;"></div>
+                  <div class="browser-dot" style="background:#FFBE2E;"></div>
+                  <div class="browser-dot" style="background:#27C840;"></div>
+                </div>
+                <div style="flex:1; background:#E8EDFF; border-radius:5px; height:16px; display:flex; align-items:center; padding:0 8px;">
+                  <span style="font-size:9px; color:#6D88F0; font-family:'Plus Jakarta Sans',sans-serif;">www.agendaria.pt</span>
+                </div>
+              </div>
+              <div style="padding:14px; display:flex; gap:10px;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:7px;">
+                  <div style="height:11px; background:#EEF1FD; border-radius:3px; width:55%;"></div>
+                  <div style="height:7px; background:#F0F4FF; border-radius:3px; width:90%;"></div>
+                  <div style="height:7px; background:#F0F4FF; border-radius:3px; width:72%;"></div>
+                  <div style="height:30px; background:rgba(0,108,240,0.75); border-radius:7px; width:38%; margin-top:6px;"></div>
+                </div>
+                <div style="width:80px; background:#EEF1FD; border-radius:8px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agentes de IA (dark) -->
+        <div class="service-card-dark reveal" style="padding: 48px; display:flex; flex-direction:column; gap:32px; animation-delay:0.2s;">
+          <!-- Icon -->
+          <div style="width:56px;height:56px;background:rgba(109,136,240,0.18);border:1px solid rgba(109,136,240,0.28);border-radius:16px;display:flex;align-items:center;justify-content:center;">
+            <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+              <rect x="8" y="3" width="12" height="8" rx="3" stroke="#A3B4F7" stroke-width="1.7"/>
+              <path d="M14 11v4" stroke="#A3B4F7" stroke-width="1.7" stroke-linecap="round"/>
+              <rect x="3" y="15" width="8" height="8" rx="2" stroke="#A3B4F7" stroke-width="1.7"/>
+              <rect x="17" y="15" width="8" height="8" rx="2" stroke="#A3B4F7" stroke-width="1.7"/>
+              <path d="M7 15v-2h14v2" stroke="#A3B4F7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div>
+            <h3 class="font-display font-bold" style="color:white; font-size: clamp(20px, 2.2vw, 28px); letter-spacing:-0.7px; margin-bottom:12px;">
+              Agentes de IA
+            </h3>
+            <p style="color:rgba(255,255,255,0.52); font-size:15px; line-height:1.72; font-family:'Plus Jakarta Sans',sans-serif;">
+              Automação inteligente que nunca dorme. Agentes que respondem a clientes, agendam reuniões e qualificam leads — 24 horas por dia, 7 dias por semana.
+            </p>
+          </div>
+
+          <!-- Chat preview -->
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <!-- Header -->
+            <div style="display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.07);">
+              <div style="width:28px;height:28px;background:linear-gradient(135deg,#6D88F0,#A3B4F7);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="white" stroke-width="1.4"/><path d="M2 12c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="white" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <span style="font-size:12px;color:rgba(255,255,255,0.55);font-family:'Plus Jakarta Sans',sans-serif;">Agente AgendarIA</span>
+              <span style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:#4ade80;font-family:'Plus Jakarta Sans',sans-serif;">
+                <span style="width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse-dot 2s infinite;"></span>
+                online
+              </span>
+            </div>
+            <!-- Messages -->
+            <div style="background:rgba(109,136,240,0.22);border-radius:12px 12px 12px 3px;padding:9px 13px;max-width:88%;">
+              <p style="font-size:12px;color:rgba(255,255,255,0.82);font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;">Olá! Como posso ajudar o seu negócio hoje?</p>
+            </div>
+            <div style="background:rgba(255,255,255,0.09);border-radius:12px 12px 3px 12px;padding:9px 13px;max-width:88%;align-self:flex-end;">
+              <p style="font-size:12px;color:rgba(255,255,255,0.65);font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;">Queria marcar uma consulta para amanhã</p>
+            </div>
+            <div style="background:rgba(109,136,240,0.22);border-radius:12px 12px 12px 3px;padding:9px 13px;max-width:88%;">
+              <p style="font-size:12px;color:rgba(255,255,255,0.82);font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;">Claro! Tenho disponibilidade às 10h, 14h ou 16h. Qual prefere?</p>
+            </div>
+          </div>
+
+          <!-- Feature list -->
+          <div style="display:flex; flex-direction:column; gap:12px; margin-top:auto;">
+            <div class="check-item" style="color:rgba(255,255,255,0.6);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(109,136,240,0.22)"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#A3B4F7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Atendimento 24/7 automatizado
+            </div>
+            <div class="check-item" style="color:rgba(255,255,255,0.6);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(109,136,240,0.22)"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#A3B4F7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Integração com CRM e calendários
+            </div>
+            <div class="check-item" style="color:rgba(255,255,255,0.6);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(109,136,240,0.22)"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#A3B4F7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Qualificação inteligente de leads
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
+  <section id="como-funciona" style="padding: 96px 0; background: #F7F9FE;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 3rem;">
+
+      <div class="reveal" style="margin-bottom: 72px;">
+        <span class="section-tag" style="margin-bottom: 16px; display:inline-flex;"><span class="tag-dot"></span>Como funciona</span>
+        <h2 class="font-display font-bold" style="color:#141927; font-size: clamp(28px, 3vw, 48px); letter-spacing:-1.6px; line-height:1.1; max-width:380px; margin-top:16px;">
+          Simples, rápido<br>e sem surpresas.
+        </h2>
+      </div>
+
+      <!-- Steps -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; position: relative;">
+
+        <!-- Connector line (desktop) -->
+        <div style="position:absolute; top:32px; left:calc(16.66% + 40px); right:calc(16.66% + 40px); height:1px; background:linear-gradient(90deg, rgba(109,136,240,0.3) 0%, rgba(109,136,240,0.3) 100%);"></div>
+
+        <!-- Step 1 -->
+        <div class="reveal" style="display:flex; flex-direction:column; gap:20px; animation-delay:0s;">
+          <div style="width:64px;height:64px;background:white;border:2px solid rgba(109,136,240,0.22);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(109,136,240,0.13);flex-shrink:0;">
+            <span class="font-display font-bold" style="font-size:22px; color:#6D88F0;">1</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold" style="color:#141927; font-size:22px; letter-spacing:-0.5px; margin-bottom:10px;">Diagnóstico</h3>
+            <p style="color:#64748b; font-size:15px; line-height:1.7; max-width:270px; font-family:'Plus Jakarta Sans',sans-serif;">
+              Analisamos o seu negócio e identificamos onde o crescimento digital pode ter mais impacto.
+            </p>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:8px;padding:11px 16px;background:white;border-radius:12px;border:1px solid rgba(109,136,240,0.12);width:fit-content;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#6D88F0" stroke-width="1.5"/><path d="M8 5v3.5l2 2" stroke="#6D88F0" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span style="font-size:12.5px;font-weight:600;color:#6D88F0;font-family:'Plus Jakarta Sans',sans-serif;">Reunião de 30 min</span>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="reveal" style="display:flex; flex-direction:column; gap:20px; animation-delay:0.15s;">
+          <div style="width:64px;height:64px;background:linear-gradient(135deg,#6D88F0,#A3B4F7);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(109,136,240,0.32);flex-shrink:0;">
+            <span class="font-display font-bold" style="font-size:22px; color:white;">2</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold" style="color:#141927; font-size:22px; letter-spacing:-0.5px; margin-bottom:10px;">Desenvolvimento</h3>
+            <p style="color:#64748b; font-size:15px; line-height:1.7; max-width:270px; font-family:'Plus Jakarta Sans',sans-serif;">
+              Construímos a solução à medida — website, agente de IA, ou ambos — com foco em resultados reais.
+            </p>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:8px;padding:11px 16px;background:white;border-radius:12px;border:1px solid rgba(109,136,240,0.12);width:fit-content;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="3.5" width="12" height="9" rx="2" stroke="#6D88F0" stroke-width="1.5"/><path d="M5.5 7.5l2 2 3.5-3.5" stroke="#6D88F0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:12.5px;font-weight:600;color:#6D88F0;font-family:'Plus Jakarta Sans',sans-serif;">Entrega em 2–4 semanas</span>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="reveal" style="display:flex; flex-direction:column; gap:20px; animation-delay:0.3s;">
+          <div style="width:64px;height:64px;background:white;border:2px solid rgba(109,136,240,0.22);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(109,136,240,0.13);flex-shrink:0;">
+            <span class="font-display font-bold" style="font-size:22px; color:#6D88F0;">3</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold" style="color:#141927; font-size:22px; letter-spacing:-0.5px; margin-bottom:10px;">Crescimento</h3>
+            <p style="color:#64748b; font-size:15px; line-height:1.7; max-width:270px; font-family:'Plus Jakarta Sans',sans-serif;">
+              Acompanhamos e otimizamos continuamente para que o seu negócio não pare de crescer.
+            </p>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:8px;padding:11px 16px;background:white;border-radius:12px;border:1px solid rgba(109,136,240,0.12);width:fit-content;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 12l3-4 3 2.5 4-6 2 7.5" stroke="#6D88F0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:12.5px;font-weight:600;color:#6D88F0;font-family:'Plus Jakarta Sans',sans-serif;">Suporte contínuo</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ STATS ═══════════════════════ -->
+  <section id="resultados" style="padding: 96px 0; background: #ffffff;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 3rem;">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
+
+        <!-- Left: Text -->
+        <div class="reveal">
+          <span class="section-tag" style="display:inline-flex; margin-bottom:20px;"><span class="tag-dot"></span>Resultados reais</span>
+          <h2 class="font-display font-bold" style="color:#141927; font-size: clamp(28px, 3vw, 48px); letter-spacing:-1.6px; line-height:1.1; margin-bottom:24px;">
+            Números que falam<br>por si próprios.
+          </h2>
+          <p style="color:#64748b; font-size:15px; line-height:1.72; max-width:420px; font-family:'Plus Jakarta Sans',sans-serif; margin-bottom:32px;">
+            As empresas que trabalham connosco veem resultados concretos — mais leads, mais tempo livre e uma presença digital que trabalha mesmo quando estão a descansar.
+          </p>
+          <a href="#contacto" style="display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#6D88F0;text-decoration:none;transition:gap 0.3s ease;" onmouseover="this.style.gap='12px'" onmouseout="this.style.gap='8px'">
+            Falar com um especialista
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#6D88F0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <!-- Right: 2×2 stats grid -->
+        <div class="reveal" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; animation-delay:0.15s;">
+
+          <div style="padding:28px 32px; background:#F7F9FE; border-radius:22px; border:1px solid rgba(109,136,240,0.1);">
+            <div class="font-display font-bold" style="font-size: clamp(28px, 3.5vw, 48px); color:#6D88F0; line-height:1;">+3x</div>
+            <p style="margin-top:10px; font-size:13.5px; color:#64748b; font-family:'Plus Jakarta Sans',sans-serif; line-height:1.5;">aumento médio de leads nos primeiros 90 dias</p>
+          </div>
+
+          <div style="padding:28px 32px; background:#141927; border-radius:22px;">
+            <div class="font-display font-bold" style="font-size: clamp(28px, 3.5vw, 48px); color:white; line-height:1;">24/7</div>
+            <p style="margin-top:10px; font-size:13.5px; color:rgba(255,255,255,0.45); font-family:'Plus Jakarta Sans',sans-serif; line-height:1.5;">presença digital ativa com agentes de IA</p>
+          </div>
+
+          <div style="padding:28px 32px; background:#141927; border-radius:22px;">
+            <div class="font-display font-bold" style="font-size: clamp(28px, 3.5vw, 48px); color:white; line-height:1;">-62%</div>
+            <p style="margin-top:10px; font-size:13.5px; color:rgba(255,255,255,0.45); font-family:'Plus Jakarta Sans',sans-serif; line-height:1.5;">tempo gasto em tarefas repetitivas de atendimento</p>
+          </div>
+
+          <div style="padding:28px 32px; background:#F7F9FE; border-radius:22px; border:1px solid rgba(109,136,240,0.1);">
+            <div class="font-display font-bold" style="font-size: clamp(28px, 3.5vw, 48px); color:#6D88F0; line-height:1;">+50</div>
+            <p style="margin-top:10px; font-size:13.5px; color:#64748b; font-family:'Plus Jakarta Sans',sans-serif; line-height:1.5;">empresas portuguesas já confiam em nós</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ TESTIMONIALS ═══════════════════════ -->
+  <section style="padding: 96px 0; background: #F7F9FE;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 3rem;">
+
+      <div class="reveal" style="display:flex; flex-direction:column; gap:16px; margin-bottom:60px;">
+        <span class="section-tag"><span class="tag-dot"></span>O que dizem de nós</span>
+        <h2 class="font-display font-bold" style="color:#141927; font-size: clamp(28px, 3vw, 48px); letter-spacing:-1.6px; line-height:1.1; margin-top:4px;">
+          Empresas que<br>já cresceram.
+        </h2>
+      </div>
+
+      <!-- Grid: 2+1 asymmetric -->
+      <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px;">
+
+        <!-- Large testimonial -->
+        <div class="testi-card reveal" style="padding:40px; animation-delay:0.1s;">
+          <div style="display:flex;gap:3px;margin-bottom:22px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p style="color:#334155; font-size:17px; line-height:1.72; letter-spacing:-0.3px; margin-bottom:32px; max-width:520px; font-family:'Plus Jakarta Sans',sans-serif;">
+            "Antes tínhamos um website estático que ninguém visitava. A AgendarIA transformou a nossa presença digital e implementou um agente que responde aos nossos clientes enquanto dormimos. As marcações aumentaram 287% em três meses."
+          </p>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <img src="https://picsum.photos/seed/margarida-renovar/48/48" alt="Margarida Costa" style="width:46px;height:46px;border-radius:50%;object-fit:cover;">
+            <div>
+              <p style="font-weight:600;font-size:14px;color:#141927;font-family:'Plus Jakarta Sans',sans-serif;">Margarida Costa</p>
+              <p style="font-size:13px;color:#94a3b8;font-family:'Plus Jakarta Sans',sans-serif;margin-top:2px;">Fundadora, Clínica Renovar</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="testi-card reveal" style="padding:36px; animation-delay:0.2s;">
+          <div style="display:flex;gap:3px;margin-bottom:20px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p style="color:#334155; font-size:15px; line-height:1.72; letter-spacing:-0.2px; margin-bottom:28px; font-family:'Plus Jakarta Sans',sans-serif;">
+            "O processo foi incrivelmente simples. Em menos de três semanas tínhamos um website novo e um agente a trabalhar. Sem complicações, mesmo."
+          </p>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <img src="https://picsum.photos/seed/tiago-novatech/48/48" alt="Tiago Fernandes" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+            <div>
+              <p style="font-weight:600;font-size:13.5px;color:#141927;font-family:'Plus Jakarta Sans',sans-serif;">Tiago Fernandes</p>
+              <p style="font-size:12.5px;color:#94a3b8;font-family:'Plus Jakarta Sans',sans-serif;margin-top:2px;">CEO, NovaTech Lda.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="testi-card reveal" style="padding:36px; animation-delay:0.3s;">
+          <div style="display:flex;gap:3px;margin-bottom:20px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#FF801E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p style="color:#334155; font-size:15px; line-height:1.72; letter-spacing:-0.2px; margin-bottom:28px; font-family:'Plus Jakarta Sans',sans-serif;">
+            "Pensava que IA era só para grandes empresas. A AgendarIA mostrou que qualquer negócio pode beneficiar. O retorno foi imediato."
+          </p>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <img src="https://picsum.photos/seed/ana-atlantico/48/48" alt="Ana Branco" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+            <div>
+              <p style="font-weight:600;font-size:13.5px;color:#141927;font-family:'Plus Jakarta Sans',sans-serif;">Ana Branco</p>
+              <p style="font-size:12.5px;color:#94a3b8;font-family:'Plus Jakarta Sans',sans-serif;margin-top:2px;">Dir., Imobiliária Atlântico</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ CTA ═══════════════════════ -->
+  <section id="contacto" class="cta-section" style="padding: 96px 0;">
+    <div class="cta-glow-1"></div>
+    <div class="cta-glow-2"></div>
+
+    <div class="reveal" style="max-width: 860px; margin: 0 auto; padding: 0 3rem; text-align: center; position: relative; z-index: 1;">
+
+      <span class="section-tag" style="color:rgba(163,180,247,0.75); display:inline-flex; margin-bottom:24px;">
+        <span style="width:5px;height:5px;background:#A3B4F7;border-radius:50%;"></span>
+        Pronto para crescer?
+      </span>
+
+      <h2 class="font-display font-bold" style="color:white; font-size: clamp(30px, 4.5vw, 60px); letter-spacing:-2px; line-height:1.06; margin-bottom:24px;">
+        A sua empresa merece<br>crescer com IA.
+      </h2>
+
+      <p style="color:rgba(255,255,255,0.45); font-size:17px; line-height:1.7; margin-bottom:48px; max-width:500px; margin-left:auto; margin-right:auto; font-family:'Plus Jakarta Sans',sans-serif;">
+        Marque uma reunião gratuita de 30 minutos. Analisamos o seu negócio e mostramos exatamente como podemos ajudar.
+      </p>
+
+      <!-- Email + CTA -->
+      <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; max-width:520px; margin:0 auto 16px;">
+        <input
+          type="email"
+          class="cta-input"
+          placeholder="o-seu-email@empresa.pt"
+        >
+        <a href="mailto:hello@agendaria.pt" class="glass-btn px-6 py-3.5 text-white font-semibold gap-2" style="background:rgba(109,136,240,0.88); font-size:15px; white-space:nowrap;">
+          Marcar Reunião
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2.5 7.5h10M8.5 3.5l4 4-4 4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <p style="font-size:12.5px; color:rgba(255,255,255,0.28); font-family:'Plus Jakarta Sans',sans-serif;">
+        Sem compromisso. Sem cartão de crédito. Resposta em menos de 24 horas.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+  <footer style="background:#0f1320; padding:56px 0; border-top:1px solid rgba(255,255,255,0.05);">
+    <div style="max-width:1400px; margin:0 auto; padding:0 3rem;">
+      <div style="display:flex; flex-direction:row; justify-content:space-between; gap:48px; flex-wrap:wrap;">
+
+        <!-- Brand -->
+        <div style="display:flex; flex-direction:column; gap:16px; max-width:280px;">
+          <img src="logo-bw.png" alt="AgendarIA" style="height:28px; width:auto; filter:brightness(0) invert(1); opacity:0.88;">
+          <p style="color:#4a5568; font-size:14px; line-height:1.7; font-family:'Plus Jakarta Sans',sans-serif;">
+            Ajudamos empresas portuguesas a crescer online através de websites modernos e agentes de inteligência artificial.
+          </p>
+          <p style="color:#2d3748; font-size:12.5px; font-family:'Plus Jakarta Sans',sans-serif;">
+            © 2025 AgendarIA. Todos os direitos reservados.
+          </p>
+        </div>
+
+        <!-- Links -->
+        <div style="display:flex; gap:56px; flex-wrap:wrap;">
+          <div>
+            <p style="color:rgba(255,255,255,0.3); font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:20px; font-family:'Plus Jakarta Sans',sans-serif;">Serviços</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <a href="#servicos" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">Websites 2.0</a>
+              <a href="#servicos" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">Agentes de IA</a>
+              <a href="#contacto" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">Consultoria Digital</a>
+            </div>
+          </div>
+          <div>
+            <p style="color:rgba(255,255,255,0.3); font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:20px; font-family:'Plus Jakarta Sans',sans-serif;">Empresa</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <a href="#como-funciona" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">Como funciona</a>
+              <a href="#resultados" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">Resultados</a>
+              <a href="#contacto" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">Contacto</a>
+            </div>
+          </div>
+          <div>
+            <p style="color:rgba(255,255,255,0.3); font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:20px; font-family:'Plus Jakarta Sans',sans-serif;">Contacto</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <a href="mailto:hello@agendaria.pt" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">hello@agendaria.pt</a>
+              <a href="https://www.agendaria.pt" style="color:#4a5568; font-size:14px; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#4a5568'">www.agendaria.pt</a>
+              <span style="color:#4a5568; font-size:14px; font-family:'Plus Jakarta Sans',sans-serif;">Portugal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
+  <script>
+    // Scroll reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Navbar scroll shrink
+    const nav = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        nav.style.top = '12px';
+      } else {
+        nav.style.top = '20px';
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
